@@ -2,7 +2,7 @@ import { FC } from 'react'
 import styles from './Layout.module.scss'
 import  Navigation  from './Navigation/Navigation'
 import  Sidebar  from './Sidebar/Sidebar'
-const Layout: FC = ({children}:any) => {
+export const Layout: FC = ({children}:any) => {
 	return (
 		<div className={styles.layout}>
 			<Navigation />
@@ -11,4 +11,4 @@ const Layout: FC = ({children}:any) => {
 		</div>
 	)
 }
-export default Layout
+

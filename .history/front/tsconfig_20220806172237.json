@@ -15,7 +15,7 @@
 		"jsx": "preserve",
 		"incremental": true,
 		"baseUrl": "./app/",
-
+    "IntrinsicAttributes":true,
 		"paths": {
 			"@/components/*": ["components/*"],
 			"@/ui/*": ["components/ui/*"],

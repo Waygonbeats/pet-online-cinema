@@ -1,12 +1,12 @@
-import Layout from '@/components/layout/Layout'
+import  Layout  from '@/components/layout/Layout'
 import { FC } from 'react'
 import { IHome } from './home-interface'
 const Home: FC<IHome> = () => {
 	return (
-  
-		<Layout><h1>Home Page</h1></Layout>
-		
-
+		<div>
+			<Layout />
+			<h1>Home page</h1>
+		</div>
 	)
 }
 export default Home
