@@ -1,4 +1,4 @@
-import { ICollection } from './../../../../backend-advanced (1)/backend-advanced-main/src/genre/interfaces/genre.interface'
+import { ICollection } from './genre.interface'
 import {
 	Injectable,
 	NotFoundException,
@@ -80,7 +80,7 @@ export class GenreService {
 			description: '',
 			icon: '',
 		}
-		const genre = await this.GenreModel.create(defaultValue)
+		const genre = await this.GenreModel.create(defaultValue as any)
 		return genre._id
 	}
 	async update(_id: string, dto: CreateGenreDto) {

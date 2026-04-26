@@ -2,8 +2,8 @@ import {
 	BadRequestException,
 	Injectable,
 	UnauthorizedException,
-	UnprocessableEntityException,
 } from '@nestjs/common'
+import { DocumentType } from '@typegoose/typegoose'
 import { ModelType } from '@typegoose/typegoose/lib/types'
 import { InjectModel } from 'nestjs-typegoose'
 import { UserModel } from 'src/user/user.model'
@@ -25,7 +25,7 @@ export class AuthService {
 		const tokens=await this.issueTokenPair(String(user._id))
 
 		return {
-			user: this.returnUserFields(user),
+			user: this.returnUserFields(user as unknown as DocumentType<UserModel>),
 			...tokens,
 		}
 		
@@ -37,6 +37,7 @@ export class AuthService {
 	const result = await this.jwtService.verifyAsync(refreshToken)
 	if(!result) throw new UnauthorizedException('Invalid token or epired!')
 	const user = await this.UserModel.findById(result._id)
+	if (!user) throw new UnauthorizedException('User not found')
 	const tokens=await this.issueTokenPair(String(user._id))
 
 	return {
@@ -63,13 +64,13 @@ export class AuthService {
 		const tokens=await this.issueTokenPair(String(user._id))
 
 		return {
-			user: this.returnUserFields(user),
+			user: this.returnUserFields(user as unknown as DocumentType<UserModel>),
 			...tokens
 			
 		}
 	}
 
-	async validateUser(dto: AuthDto): Promise<UserModel> {
+	async validateUser(dto: AuthDto): Promise<DocumentType<UserModel>> {
 		//Получаем dto с данными
 		const user = await this.UserModel.findOne({ email: dto.email }) //Ищем юзера по email
 		if (!user) throw new UnauthorizedException('User not found') //Если не нашли
@@ -93,12 +94,12 @@ export class AuthService {
 		return { refreshToken, accessToken }
 	}
 
-	returnUserFields(user: UserModel) {
+	returnUserFields(user: DocumentType<UserModel>) {
 		return {
 			
 			_id: user._id,
 			email: user.email,
-			isAdmin: user,
+			isAdmin: user.isAdmin,
 		}
 	}
 }

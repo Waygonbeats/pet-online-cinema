@@ -1,4 +1,4 @@
-import { Types } from 'mongoose'
+import { Types, UpdateQuery } from 'mongoose'
 import { ModelType } from '@typegoose/typegoose/lib/types'
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from 'nestjs-typegoose'
@@ -41,20 +41,20 @@ export class MovieService {
 	}
 
 	async byActor(actorId: Types.ObjectId) {
-		const docs = await this.MovieModel.find({ actor: actorId }).exec()
+		const docs = await this.MovieModel.find({ actors: actorId }).exec()
 		if (!docs) throw new NotFoundException('Movies not found')
 		return docs
 	}
 
 	async byGenres(genreIds:Types.ObjectId[]) {
-		const docs= await this.MovieModel.findOne({
+		const docs= await this.MovieModel.find({
 			genres: { $in:genreIds }}).exec()
         if(!genreIds) throw new NotFoundException('You nee to specify genre IDs')
 		if (!docs) throw new NotFoundException('Update not found')
 		return docs
 	}
 	async getMostPopular() {
-		return await this.MovieModel.find({ countOpened: { $in: 0 } })
+		return await this.MovieModel.find({ countOpened: { $gt: 0 } })
 			.sort({ countOpened: -1 })
 			.populate('genres')
 			.exec()
@@ -76,7 +76,7 @@ export class MovieService {
 		return updateDoc
 	}
 async updateRating(id:Types.ObjectId, newRating:number){
-	return this.MovieModel.findOneAndUpdate(id,{
+	return this.MovieModel.findByIdAndUpdate(id,{
 		rating: newRating
 	},{
 		new:true
@@ -101,12 +101,12 @@ async updateRating(id:Types.ObjectId, newRating:number){
 			vaideoUrl: '',
 			slug: '',
 		}
-		const doc = await this.MovieModel.create(defaultValue)
+		const doc = await this.MovieModel.create(defaultValue as any)
 		return doc._id
 	}
 	//telegram mod
 	async update(_id: string, dto: UpdateMovieDto) {
-		const updateDoc = await this.MovieModel.findByIdAndUpdate(_id, dto, {
+		const updateDoc = await this.MovieModel.findByIdAndUpdate(_id, dto as unknown as UpdateQuery<MovieModel>, {
 			new: true,
 		}).exec()
 		if (!updateDoc) throw new NotFoundException('UpdateMovie not found')

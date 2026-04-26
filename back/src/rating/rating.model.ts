@@ -7,10 +7,10 @@ export interface RatingModel  extends Base {}
 
 export class RatingModel extends TimeStamps {//Задаем опции для поля что ниже
     @prop({ref:()=>UserModel})
-    userId:Ref<UserModel>[]
+    userId:Ref<UserModel>
 
     @prop({ref:()=>MovieModel})
-    movieId:Ref<MovieModel>[]
+    movieId:Ref<MovieModel>
 
     @prop() 
     value:number
